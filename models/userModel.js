@@ -12,7 +12,8 @@ const userSchema = mongoose.Schema({
     },
     password : {
         type : String,
-        require : [true , "enter password"]
+        require : [true , "enter password"],
+        select : false
     } ,
     passwordConfirm : {
         type : String,
@@ -26,9 +27,19 @@ const userSchema = mongoose.Schema({
     }
 });
 
+userSchema.pre('save' , async function(next){
+    if(!this.isModified('password')){
+        return next();
+    }
+    this.password = await bcrypt.hash(this.password, 12);
+    this.passwordConfirm = undefined;
+    next();
+})
+
 userSchema.methods.checkPassword = async function(userPassword , databasePassword){
     return await bcrypt.compare(userPassword , databasePassword);
 }
+
 
 const User = mongoose.model('User' , userSchema);
 module.exports = User;

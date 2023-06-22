@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const User = require('../models/userModel')
+const {promisify} = require('util')
 
 exports.signup = async (req , res) => {
     // CREATE USER FROM THE OBTAINED DETAILS
@@ -51,6 +52,24 @@ res.status(200).json({
         token
     }
 })
+}
+
+exports.protect = async (req,res,next)=>{
+    let token;
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+        token = req.headers.authorization.split(' ')[1];
+    }
+    if(!token){
+        res.status(400).json({
+            status : "fail" , 
+            message : "Token not found"    
+        })
+    }
+    const decode = await promisify(jwt.verify)(token , process.env.JWT_SECRETKEY );
+    console.log(decode);
+    const user = await User.findById(decode.id);
+    req.user = user;
+    next();
 }
 
 
