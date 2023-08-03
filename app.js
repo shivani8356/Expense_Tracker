@@ -7,7 +7,7 @@ const groupRouter = require('./routes/groupRouter')
 app.use(express.json());
 
 app.use('/api/v1/expenses' , expenseRouter)
-app.use('/api/v1/user' , userRouter) 
-app.use('/api/v1/group' , groupRouter)
+app.use('/api/v1/users' , userRouter) 
+app.use('/api/v1/groups' , groupRouter)
 
 module.exports = app;

@@ -7,13 +7,15 @@ const {promisify} = require('util')
 exports.signup = async (req , res) => {
     // CREATE USER FROM THE OBTAINED DETAILS
     try {
-        const {name,email,password,passwordConfirm} = req.body;
+        const {name,email,role,password,passwordConfirm} = req.body;
         const user = await User.create({
         name,
         email,
+        role,
         password,
         passwordConfirm
     })
+    console.log(user);
     const token = jwt.sign({ id : user._id }, process.env.JWT_SECRETKEY , {expiresIn : '3d'});
     return res.status(200).json({
         status : "success",
@@ -66,10 +68,21 @@ exports.protect = async (req,res,next)=>{
         })
     }
     const decode = await promisify(jwt.verify)(token , process.env.JWT_SECRETKEY );
-    console.log(decode);
     const user = await User.findById(decode.id);
     req.user = user;
     next();
+}
+
+exports.restrict = (role)=>{
+    return (req,res,next)=>{
+        if(req.user.role !== role){
+            return res.status(400).json({
+                status : "fail" , 
+                message : "Only group admin can create group and add group members"    
+            })
+        }
+        next();
+    }
 }
 
 

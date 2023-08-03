@@ -10,6 +10,12 @@ const userSchema = mongoose.Schema({
         type : String,
         require : [true , "enter email address"]
     },
+    role:
+    {
+        type : String,
+        enum : ["group_admin" , "group_member"],
+        default : "group_member"
+    },
     password : {
         type : String,
         require : [true , "enter password"],
