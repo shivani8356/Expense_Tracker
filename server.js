@@ -7,7 +7,7 @@ mongoose.connect(process.env.DATABASE).then(()=>{
     console.log("DB connection is successfull")
 });
 console.log("trying to fetch this");
-console.log("hey shivani what are you doing")
+console.log("shivani here guys")
 
 app.listen(process.env.PORT , ()=>{
     console.log(`Listening on port ${process.env.PORT}`)
