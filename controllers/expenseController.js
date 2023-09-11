@@ -29,7 +29,10 @@ exports.createExpense = async (req,res)=>{
 exports.getAllExpenses = async (req,res)=>{
     try {
         // const queryObj = {...req.query};
-        const expenses = await Expense.find();
+        let expenses = await Expense.find();
+        if(req.query.sort){
+            expenses = await Expense.find().sort(req.query.sort)
+        }
         // console.log(expenses);
         res.status(200).json({
             status : "success",
